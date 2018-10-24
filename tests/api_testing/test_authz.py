@@ -93,7 +93,7 @@ class HasPermissionPostTestCase(_Base):
     """使用 POST 方法查询用户是否拥有某项权限
     """
 
-    def test_success(self):
+    def test_yes(self):
         """POST /has_permission - 检查权限存在
         """
 
@@ -105,6 +105,21 @@ class HasPermissionPostTestCase(_Base):
         body = get_body_json(resp)
         self.assertEqual(resp.code, 200)
         self.assertEqual(body["status"], "yes")
+
+    def test_no(self):
+        """POST /has_permission - 检查权限不存在
+        """
+
+        perm = Permission(name="new-permission")
+        self.db.add(perm)
+        self.db.commit()
+
+        resp = self.api_post("/has_permission", body={
+            "user_id": str(self.user.uuid),
+            "permission_name": perm.name})
+        body = get_body_json(resp)
+        self.assertEqual(resp.code, 200)
+        self.assertEqual(body["status"], "no")
 
     def test_user_notexist(self):
         """GET /has_permission - 指定的用户ID不存在
