@@ -6,6 +6,6 @@ psycopg2-binary==2.7.5
 bravado_core==5.0.7
 nose2==0.8.0
 pylint==2.1.1
-flake8==3.5.0
 coverage==4.5.1
 requests
+git+https://gitlab.com/pycqa/flake8#egg=flake8
