@@ -1,0 +1,11 @@
+language: python
+python:
+  - "3.7"
+# command to install dependencies
+install:
+  - pip install -r requirements.dev.txt
+# command to run tests
+script:
+  - pylint src tests
+  - flake8
+  - nose2 -v tests.api_testing
