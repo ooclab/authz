@@ -13,8 +13,8 @@ from codebase.utils.common import scrub
 
 
 def validate_default_error(body):
-    s = api.spec_dict["definitions"]["DefaultErrorResponse"]
-    api.validate_object(s, body)
+    spec = api.spec_dict["definitions"]["DefaultErrorResponse"]
+    api.validate_object(spec, body)
 
 
 def get_body_json(resp):

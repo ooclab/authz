@@ -1,4 +1,4 @@
-# pylint: disable=W0221,W0223
+# pylint: disable=W0221,W0223,broad-except
 
 import logging
 
@@ -37,17 +37,17 @@ class PermissionHandler(APIRequestHandler):
     def get(self):
         """获取权限列表
         """
-        e, q, f = get_list(
+        error, result, _filter = get_list(
             self,
             self.db.query(Permission),
             allow_sort_by=["id", "created", "name"],
             model=Permission,
         )
-        if e:
-            self.fail(e)
+        if error:
+            self.fail(error)
             return
 
-        self.success(**{"data": [x.isimple for x in q], "filter": f})
+        self.success(**{"data": [x.isimple for x in result], "filter": _filter})
 
     def post(self):
         """创建权限
@@ -101,12 +101,12 @@ class SinglePermissionHandler(_BaseSinglePermissionHandler):
         perm = self.get_permission(_id)
         try:
             self._remove_permission(perm)
-        except Exception as e:
+        except Exception as err:
             logging.error(
                 'rollback: cancel delete permission "%s"', _id, exc_info=True
             )
             self.db.rollback()
-            self.fail(str(e))
+            self.fail(str(err))
             return
 
         self.success()

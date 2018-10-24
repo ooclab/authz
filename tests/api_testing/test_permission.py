@@ -46,8 +46,8 @@ class MyPermissionListTestCase(_Base):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_my_permission.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_my_permission.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), role_numbers)
         for role_data in body["data"]:
@@ -90,8 +90,8 @@ class PermissionListTestCase(_Base):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_permission.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_permission.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), body["filter"]["page_size"])
         self.assertEqual(body["filter"]["total"], total * total * total)
@@ -154,8 +154,8 @@ class PermissionViewTestCase(_Base):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_permission_id.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_permission_id.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         data = body["data"]
         self.assertEqual(data["summary"], summary)

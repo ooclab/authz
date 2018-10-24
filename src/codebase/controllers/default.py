@@ -17,8 +17,8 @@ class SpecHandler(APIRequestHandler):
 
     def get(self):
 
-        p = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
-        abspath = os.path.join(p, "schema.yml")
+        abspath = os.path.join(path, "schema.yml")
         self.set_header("Content-Type", "text/plain")
         self.write(open(abspath, "rb").read())

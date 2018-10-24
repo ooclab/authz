@@ -1,3 +1,5 @@
+# pylint: disable=W0223,W0221
+
 from codebase.web import (
     APIRequestHandler,
     HTTPError

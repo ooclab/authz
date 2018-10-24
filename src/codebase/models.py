@@ -1,4 +1,4 @@
-# pylint: disable=R0902,E1101,W0201
+# pylint: disable=R0902,E1101,W0201,too-few-public-methods
 
 import datetime
 import uuid
@@ -127,12 +127,12 @@ class User(ORMBase):
 
     roles = relationship("Role", secondary=_USER_ROLES, backref="users")
 
-    def has_permission(self, perm):
-        for r in self.roles:
+    def has_permission(self, permission_name):
+        for role in self.roles:
             # 如果拥有超级管理员角色名称，拥有权限
-            if r.name == settings.ADMIN_ROLE_NAME:
+            if role.name == settings.ADMIN_ROLE_NAME:
                 return True
-            for p in r.permissions:
-                if p.name == perm:
+            for perm in role.permissions:
+                if perm.name == permission_name:
                     return True
         return False

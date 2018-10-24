@@ -36,8 +36,8 @@ class MyRoleListTestCase(RoleBaseTestCase):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_my_role.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_my_role.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         names = [role["name"] for role in body["data"]]
         self.assertEqual([basename + str(i)
@@ -67,8 +67,8 @@ class RoleListTestCase(RoleBaseTestCase):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_role.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_role.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), body["filter"]["page_size"])
         self.assertEqual(body["filter"]["total"], total * total)
@@ -133,8 +133,8 @@ class SingleRoleViewTestCase(RoleBaseTestCase):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_role_id.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_role_id.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         data = body["data"]
         self.assertEqual(data["summary"], role_summary)
@@ -253,8 +253,8 @@ class RolePermissionListTestCase(RoleBaseTestCase):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_role_id_permission.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_role_id_permission.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), permission_total)
 
@@ -323,9 +323,9 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
 
-        s = self.rs.post_role_id_permission_append.op_spec[
+        spec = self.rs.post_role_id_permission_append.op_spec[
             "responses"]["default"]["schema"]
-        api.validate_object(s, body)
+        api.validate_object(spec, body)
 
         self.assertEqual(body["status"], "have-not-exist")
         self.assertEqual(len(body["data"]), notexist_total)
@@ -389,9 +389,9 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
 
-        s = self.rs.post_role_id_permission_remove.op_spec[
+        spec = self.rs.post_role_id_permission_remove.op_spec[
             "responses"]["default"]["schema"]
-        api.validate_object(s, body)
+        api.validate_object(spec, body)
 
         self.assertEqual(body["status"], "have-not-exist")
         self.assertEqual(len(body["data"]), notexist_total)

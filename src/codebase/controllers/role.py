@@ -1,3 +1,5 @@
+# pylint: disable=W0223,W0221,broad-except
+
 import logging
 
 from codebase.web import (
@@ -26,17 +28,17 @@ class RoleHandler(APIRequestHandler):
     def get(self):
         """获取角色列表
         """
-        e, q, f = get_list(
+        err, result, _filter = get_list(
             self,
             self.db.query(Role),
             allow_sort_by=["id", "created", "name"],
             model=Role,
         )
-        if e:
-            self.fail(e)
+        if err:
+            self.fail(err)
             return
 
-        self.success(**{"data": [x.isimple for x in q], "filter": f})
+        self.success(**{"data": [x.isimple for x in result], "filter": _filter})
 
     def post(self):
         """创建角色
@@ -107,11 +109,11 @@ class SingleRoleHandler(_BaseSingleRoleHandler):
         role = self.get_role(_id)
         try:
             self._remove_role(role)
-        except Exception as e:
+        except Exception as err:
             logging.error("rollback: cancel delete role %s",
                           _id, exc_info=True)
             self.db.rollback()
-            self.fail(str(e))
+            self.fail(str(err))
             return
 
         self.success()

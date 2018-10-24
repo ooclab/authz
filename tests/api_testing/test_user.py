@@ -41,8 +41,8 @@ class UserRoleListTestCase(_BaseTestCase):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        s = self.rs.get_user_id_role.op_spec["responses"]["200"]["schema"]
-        api.validate_object(s, body)
+        spec = self.rs.get_user_id_role.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
 
         self.assertEqual(
             [basename + str(i) for i in range(user_role_total)],
@@ -99,9 +99,9 @@ class UserRoleAppendTestCase(_BaseTestCase):
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
 
-        s = self.rs.post_user_id_role_append.op_spec[
+        spec = self.rs.post_user_id_role_append.op_spec[
             "responses"]["default"]["schema"]
-        api.validate_object(s, body)
+        api.validate_object(spec, body)
 
         self.assertEqual(body["status"], "have-not-exist")
         self.assertEqual(len(body["data"]), notexist_total)
@@ -168,9 +168,9 @@ class UserRoleRemoveTestCase(_BaseTestCase):
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
 
-        s = self.rs.post_user_id_role_remove.op_spec[
+        spec = self.rs.post_user_id_role_remove.op_spec[
             "responses"]["default"]["schema"]
-        api.validate_object(s, body)
+        api.validate_object(spec, body)
 
         self.assertEqual(body["status"], "have-not-exist")
         self.assertEqual(len(body["data"]), notexist_total)

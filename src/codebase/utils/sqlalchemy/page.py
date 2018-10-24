@@ -1,3 +1,5 @@
+# pylint: disable=invalid-name
+
 from eva.conf import settings
 from sqlalchemy import asc, desc, func, inspect
 
