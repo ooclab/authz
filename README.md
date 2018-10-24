@@ -1,5 +1,7 @@
 # authz
 
+[![Build Status](https://travis-ci.com/ooclab/authz.svg?branch=master)](https://travis-ci.com/ooclab/authz)
+
 The authorization (authz) service for service-oriented architecture
 
 
