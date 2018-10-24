@@ -1,0 +1,11 @@
+FROM python:3.7
+MAINTAINER lijian@ooclab.com
+
+ENV PATH /usr/local/bin:$PATH
+
+COPY requirements.dev.txt /requirements.txt
+RUN pip3 install -r /requirements.txt && rm /requirements.txt
+
+WORKDIR /work
+VOLUME /data
+EXPOSE 3000
