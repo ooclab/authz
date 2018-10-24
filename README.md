@@ -3,21 +3,21 @@
 The authorization (authz) service for service-oriented architecture
 
 
-## 默认用户
+## 特殊角色
 
-我们需要为默认情况创建几个特殊账户（user_id），以方便系统初始化是可以精确匹配权限。
+我们需要为默认情况创建几个特殊角色（role name），以方便系统初始化是可以精确匹配权限。
 
 ### anonymous
 
-匿名用户
+匿名用户角色
 
 ### authenticated
 
-已验证的用户，也称登录用户
+已验证的用户角色，也称登录用户角色
 
 ### admin
 
-超级管理员
+超级管理员角色
 
 
 ## 技术实现
