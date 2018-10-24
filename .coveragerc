@@ -1,0 +1,6 @@
+[run]
+omit = test_*.py
+       src/manage.py
+       src/server.py
+       src/codebase/management/dropdb.py
+       src/codebase/management/syncdb.py
