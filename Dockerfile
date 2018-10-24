@@ -1,6 +1,8 @@
 FROM python:3.7
 MAINTAINER lijian@ooclab.com
 
+ENV PYTHONIOENCODING=utf-8
+ENV PYTHONPATH=/work
 ENV PATH /usr/local/bin:$PATH
 
 COPY requirements.txt /

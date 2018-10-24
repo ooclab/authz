@@ -7,15 +7,11 @@ services:
         tty: true
         command: bash
         environment:
-            PYTHONIOENCODING: utf-8
-            PYTHONPATH: /work
-            NOSE_NOCAPTURE: 1
+            DB_URI: "postgresql://root:password@postgres:5432/authz"
         ports:
             - "3000:3000"
         volumes:
             - "./:/work"
-        # entrypoint: python /work/server.py
-        # entrypoint: /work/coverage_test.sh
 
     postgres:
         image: postgres:10.5
