@@ -8,4 +8,5 @@ install:
 script:
   - pylint src tests
   - flake8
-  - nose2 -v tests.api_testing
+  - nose2 -v --with-coverage --coverage-report xml
+  - codecov
