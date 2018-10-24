@@ -165,6 +165,18 @@ class HasPermissionIDGetTestCase(_Base):
         self.assertEqual(resp.code, 200)
         self.assertEqual(body["status"], "yes")
 
+    def test_permission_notexist(self):
+        """GET /has_permission_id - 指定的权限ID不存在
+        """
+
+        perm_id = str(uuid.uuid4())
+        resp = self.api_get(
+            f"/has_permission_id?user_id={self.user.uuid}"
+            f"&permission_id={perm_id}")
+        body = get_body_json(resp)
+        self.assertEqual(resp.code, 400)
+        self.assertEqual(body["status"], "invalid-permission")
+
 
 class HasPermissionIDPostTestCase(_Base):
     """使用 POST 方法查询用户是否拥有某项权限（使用权限ID）
