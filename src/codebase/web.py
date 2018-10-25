@@ -12,7 +12,6 @@ from tornado.web import HTTPError
 from tornado.escape import json_decode
 from tornado.log import app_log, gen_log
 
-import jsonschema
 from codebase.models import User
 
 
@@ -90,10 +89,6 @@ class APIRequestHandler(MainBaseHandler):
                 reason = exception.reason  # HTTPError reason!
             if isinstance(exception, HTTPError) and exception.status_code:
                 status_code = exception.status_code  # HTTPError status_code!
-            if isinstance(exception, jsonschema.exceptions.ValidationError):
-                # TODO! 提供更详细信息！
-                reason = "validation-error"
-                message = exception.message
             d["exc_info"] = str(exception)
 
         if reason:
