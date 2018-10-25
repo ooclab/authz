@@ -1,3 +1,5 @@
+# pylint: disable=R0903
+
 import json
 import uuid
 import logging
@@ -12,6 +14,23 @@ from codebase.models import User
 from codebase.utils.common import scrub
 
 
+class Bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+# \u21E8 输出 ⇨
+# \u21B3 输出 ↳
+FIRST_ARROW = f"{Bcolors.OKGREEN}\u21E8{Bcolors.ENDC}"
+SECOND_ARROW = f"{Bcolors.WARNING}\u21B3{Bcolors.ENDC}"
+
+
 def validate_default_error(body):
     spec = api.spec_dict["definitions"]["DefaultErrorResponse"]
     api.validate_object(spec, body)
@@ -23,12 +42,18 @@ def get_body_json(resp):
 
 class BaseTestCase(tornado.testing.AsyncHTTPTestCase):
 
+    main_title = None
+
     def shortDescription(self):
         class_doc = self.__doc__
         doc = self._testMethodDoc
         first = class_doc.split("\n")[0].strip() if class_doc else None
         second = doc.split("\n")[0].strip() if doc else None
-        return f"{first} : {second}"
+        if not self.main_title:
+            self.__class__.main_title = True
+            return (f"\n{FIRST_ARROW} {Bcolors.BOLD}{first}{Bcolors.ENDC}\n"
+                    f"  {SECOND_ARROW} {second}")
+        return f"  {SECOND_ARROW} {second}"
 
     def get_app(self):
         settings.DEBUG = False

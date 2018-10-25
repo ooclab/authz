@@ -11,7 +11,10 @@ from codebase.utils.swaggerui import api
 
 from .base import (
     BaseTestCase,
-    get_body_json
+    get_body_json,
+    Bcolors,
+    FIRST_ARROW,
+    SECOND_ARROW
 )
 
 
@@ -42,7 +45,12 @@ class _Base(BaseTestCase):
         doc = self._testMethodDoc
         first = class_doc.split("\n")[0].strip() if class_doc else None
         second = doc.split("\n")[0].strip() if doc else None
-        return f"{self.method.upper(): <6} {first} : {second}"
+        if not self.main_title:
+            self.__class__.main_title = True
+            return (f"\n{FIRST_ARROW} {self.method.upper()} "
+                    f"{Bcolors.BOLD}{first}{Bcolors.ENDC}\n"
+                    f"  {SECOND_ARROW} {second}")
+        return f"  {SECOND_ARROW} {second}"
 
     def validate_response_200(self, user_id, permission, status):
         resp = self.has_permission_request(user_id, permission)
@@ -60,8 +68,6 @@ class _Base(BaseTestCase):
 def has_permission_class_factory(name, method):
 
     class _BaseHasPermission(_Base):
-        """GET|POST /has_permission - 鉴权（使用权限名称）
-        """
 
         def has_permission_request(self, user_id, permission_name):
             if self.method == "GET":

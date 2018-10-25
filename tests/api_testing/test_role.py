@@ -19,7 +19,7 @@ class RoleBaseTestCase(BaseTestCase):
 
 
 class MyRoleListTestCase(RoleBaseTestCase):
-    """GET    /my/role - 查看我的角色列表
+    """GET /my/role - 查看我的角色列表
     """
 
     def test_success(self):
@@ -47,7 +47,7 @@ class MyRoleListTestCase(RoleBaseTestCase):
 
 
 class RoleListTestCase(RoleBaseTestCase):
-    """GET    /role - 查看所有角色列表
+    """GET /role - 查看所有角色列表
     """
 
     def setUp(self):
@@ -104,7 +104,7 @@ class RoleListTestCase(RoleBaseTestCase):
 
 
 class RoleCreateTestCase(RoleBaseTestCase):
-    """POST   /role - 创建角色
+    """POST /role - 创建角色
     """
 
     def test_name_exist(self):
@@ -141,7 +141,7 @@ class RoleCreateTestCase(RoleBaseTestCase):
 
 
 class SingleRoleViewTestCase(RoleBaseTestCase):
-    """GET    /role/{id} - 查看指定的角色详情
+    """GET /role/{id} - 查看指定的角色详情
     """
 
     def test_not_found(self):
@@ -176,7 +176,7 @@ class SingleRoleViewTestCase(RoleBaseTestCase):
 
 
 class RoleUpdateTestCase(RoleBaseTestCase):
-    """POST   /role/{id} - 更新角色属性
+    """POST /role/{id} - 更新角色属性
     """
 
     def test_not_found(self):
@@ -255,7 +255,7 @@ class RoleDeleteTestCase(RoleBaseTestCase):
 
 
 class RolePermissionListTestCase(RoleBaseTestCase):
-    """GET    /role/{id}/permission - 获取指定角色的权限列表
+    """GET /role/{id}/permission - 获取指定角色的权限列表
     """
 
     def test_not_found(self):
@@ -293,7 +293,7 @@ class RolePermissionListTestCase(RoleBaseTestCase):
 
 
 class RolePermissionAppendTestCase(RoleBaseTestCase):
-    """POST   /role/{id}/permission/append - 增加指定角色的权限
+    """POST /role/{id}/permission/append - 增加指定角色的权限
     """
 
     def test_not_found(self):
@@ -365,7 +365,7 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
 
 
 class RolePermissionRemoveTestCase(RoleBaseTestCase):
-    """POST   /role/{id}/permission/remove - 删除指定角色的权限
+    """POST /role/{id}/permission/remove - 删除指定角色的权限
     """
 
     def test_not_found(self):
@@ -431,7 +431,7 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
 
 
 class RoleIDByNameTestCase(RoleBaseTestCase):
-    """GET    /role/id - 通过角色名查看ID
+    """GET /role/id - 通过角色名查看ID
     """
 
     def test_not_found(self):

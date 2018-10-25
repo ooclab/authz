@@ -23,7 +23,7 @@ class _Base(BaseTestCase):
 
 
 class MyPermissionListTestCase(_Base):
-    """GET    /my/permission - 查看我的权限
+    """GET /my/permission - 查看我的权限
     """
 
     def test_success(self):
@@ -62,7 +62,7 @@ class MyPermissionListTestCase(_Base):
 
 
 class PermissionListTestCase(_Base):
-    """GET    /permission - 获取权限列表
+    """GET /permission - 获取权限列表
     """
 
     def setUp(self):
@@ -114,7 +114,7 @@ class PermissionListTestCase(_Base):
 
 
 class PermissionCreateTestCase(_Base):
-    """POST   /permission - 创建权限
+    """POST /permission - 创建权限
     """
 
     def test_name_exist(self):
@@ -149,7 +149,7 @@ class PermissionCreateTestCase(_Base):
 
 
 class PermissionViewTestCase(_Base):
-    """GET    /permission/{id} - 查看指定权限详情
+    """GET /permission/{id} - 查看指定权限详情
     """
 
     def test_not_found(self):
@@ -184,7 +184,7 @@ class PermissionViewTestCase(_Base):
 
 
 class PermissionUpdateTestCase(_Base):
-    """POST   /permission/{id} - 更新权限属性
+    """POST /permission/{id} - 更新权限属性
     """
 
     def test_not_found(self):
