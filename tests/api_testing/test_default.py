@@ -2,7 +2,7 @@ from .base import BaseTestCase
 
 
 class HealthTestCase(BaseTestCase):
-    """GET /_health - 健康检查
+    """GET    /_health - 健康检查
     """
 
     def test_health(self):
@@ -15,7 +15,7 @@ class HealthTestCase(BaseTestCase):
 
 
 class SpecTestCase(BaseTestCase):
-    """GET / - SwaggerUI 文档
+    """GET    / - SwaggerUI 文档
     """
 
     def test_spec(self):

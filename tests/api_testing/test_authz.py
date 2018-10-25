@@ -42,7 +42,7 @@ class _Base(BaseTestCase):
         doc = self._testMethodDoc
         first = class_doc.split("\n")[0].strip() if class_doc else None
         second = doc.split("\n")[0].strip() if doc else None
-        return f"{self.method.upper()} {first} : {second}"
+        return f"{self.method.upper(): <6} {first} : {second}"
 
     def validate_response_200(self, user_id, permission, status):
         resp = self.has_permission_request(user_id, permission)

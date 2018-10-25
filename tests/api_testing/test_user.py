@@ -18,7 +18,7 @@ class _BaseTestCase(BaseTestCase):
 
 
 class UserRoleListTestCase(_BaseTestCase):
-    """GET /user/{id}/role - 查看用户的角色列表
+    """GET    /user/{id}/role - 查看用户的角色列表
     """
 
     def test_success(self):
@@ -52,7 +52,7 @@ class UserRoleListTestCase(_BaseTestCase):
 
 
 class UserRoleAppendTestCase(_BaseTestCase):
-    """POST /user/{id}/role/append - 增加指定用户的角色
+    """POST   /user/{id}/role/append - 增加指定用户的角色
     """
 
     def append_roles(self, user_id):
@@ -110,7 +110,7 @@ class UserRoleAppendTestCase(_BaseTestCase):
 
 
 class UserRoleRemoveTestCase(_BaseTestCase):
-    """POST /user/{id}/role/remove - 删除指定用户的角色
+    """POST   /user/{id}/role/remove - 删除指定用户的角色
     """
 
     def test_not_found(self):
