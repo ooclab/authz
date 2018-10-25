@@ -26,7 +26,7 @@ The authorization (authz) service for service-oriented architecture
 
 Docker Image - [ooclab/authz](https://hub.docker.com/r/ooclab/authz/)
 
-docker image 当前支持数据库：
+**说明** 当前的 Docker Image 仅支持数据库：
 - sqlite3
 - postgresql
 
