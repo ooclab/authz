@@ -114,6 +114,8 @@ class User(ORMBase):
     __tablename__ = "authz_user"
 
     id = Column(Integer, Sequence("authz_user_id_seq"), primary_key=True)
+    # TODO: 虽然我们这里认为 user id 是 uuid，当实际情况不一定是
+    # 这里可以考虑根据用户配置，动态创建 uid 项，而不是强制使用 uuid
     uuid = Column(UUIDType(), unique=True)
     created = Column(DateTime(), default=datetime.datetime.utcnow)
 
