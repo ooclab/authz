@@ -1,8 +1,10 @@
 import sys
+from importlib import import_module
 
+from eva.conf import settings
 from eva.management.common import EvaManagementCommand
 
-from codebase.utils.sqlalchemy import dbc, load_models
+from codebase.utils.sqlalchemy import dbc
 
 
 class Command(EvaManagementCommand):
@@ -18,5 +20,5 @@ class Command(EvaManagementCommand):
             print("dropdb 只能在开发/测试环境中使用!")
             sys.exit(1)
 
-        load_models()
+        import_module(settings.MODELS_MODULE)
         dbc.drop_all()

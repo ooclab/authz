@@ -2,9 +2,6 @@
 """SQLAlchemy Help Method
 """
 
-import logging
-from importlib import import_module
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -43,9 +40,3 @@ class DBC:
 
 
 dbc = DBC()
-
-
-def load_models():
-    m = import_module(settings.MODELS_MODULE)
-    if m:
-        logging.debug("load models SUCCESS")
