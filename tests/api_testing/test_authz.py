@@ -66,12 +66,10 @@ def has_permission_class_factory(name, method):
                 return self.api_get(
                     f"/has_permission?user_id={user_id}"
                     f"&permission_name={permission_name}")
-            if self.method == "POST":
-                return self.api_post("/has_permission", body={
-                    "user_id": user_id,
-                    "permission_name": permission_name})
 
-            raise Exception("not-support-method")
+            return self.api_post("/has_permission", body={
+                "user_id": user_id,
+                "permission_name": permission_name})
 
         def test_yes(self):
             """检查权限存在
@@ -130,12 +128,10 @@ def has_permission_id_class_factory(name, method):
                 return self.api_get(
                     f"/has_permission_id?user_id={user_id}"
                     f"&permission_id={permission_id}")
-            if self.method == "POST":
-                return self.api_post("/has_permission_id", body={
-                    "user_id": user_id,
-                    "permission_id": permission_id})
 
-            raise Exception("not-support-method")
+            return self.api_post("/has_permission_id", body={
+                "user_id": user_id,
+                "permission_id": permission_id})
 
         def test_yes(self):
             """检查权限存在
