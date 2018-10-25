@@ -19,19 +19,17 @@ def get_list(hdr, q, default_sort_by="id", allow_sort_by=None, model=None):
     q = q.order_by(asc(sb) if is_asc else desc(sb))
 
     # pagination
-    current_page = int(hdr.get_argument("current_page", 1))
-    if current_page < 1:
-        return f"no-such-page:{current_page}", None, None
     page_size = int(hdr.get_argument("page_size", settings.PAGE_SIZE))
+    current_page = int(hdr.get_argument("page", 1))
     start = (current_page - 1) * page_size
-    if start > total:
-        return f"page-is-too-large:{current_page}", None, None
     stop = current_page * page_size
-    q = q.slice(start, stop)
+
+    if current_page < 1 or start > total:
+        return f"no-such-page:{current_page}", None, None
 
     return (
         "",
-        q,
+        q.slice(start, stop),
         {
             "page_size": page_size,
             "page": current_page,
