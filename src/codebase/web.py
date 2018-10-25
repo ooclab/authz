@@ -8,12 +8,12 @@ import pprint
 from eva.conf import settings
 
 import tornado.web
+from tornado.web import HTTPError
 from tornado.escape import json_decode
 from tornado.log import app_log, gen_log
 
 import jsonschema
 from codebase.models import User
-from codebase.utils.exception import HTTPError
 
 
 class BaseHandler(tornado.web.RequestHandler):

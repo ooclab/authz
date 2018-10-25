@@ -1,9 +1,8 @@
 # pylint: disable=W0223,W0221
 
-from codebase.web import (
-    APIRequestHandler,
-    HTTPError
-)
+from tornado.web import HTTPError
+
+from codebase.web import APIRequestHandler
 from codebase.models import (
     User,
     Role

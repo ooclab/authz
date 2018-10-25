@@ -1,9 +1,10 @@
 # pylint: disable=W0221,W0223,broad-except
 
+from tornado.web import HTTPError
+
 from codebase.web import (
     APIRequestHandler,
-    authenticated,
-    HTTPError
+    authenticated
 )
 from codebase.models import Permission
 from codebase.utils.sqlalchemy.page import get_list
