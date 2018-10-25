@@ -26,7 +26,7 @@ The authorization (authz) service for service-oriented architecture
 
 ### 概念
 
-- [角色](./docs/rols.md)
+- [角色](./docs/roles.md)
 
 ### 设计
 
