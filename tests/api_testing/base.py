@@ -69,14 +69,13 @@ class BaseTestCase(tornado.testing.AsyncHTTPTestCase):
         return dbc.session()
 
     def _api_request(self, method, url, headers=None, body=None, **kwargs):
-        _headers = self.http_request_headers
-        if headers:
-            _headers.update(headers)
-        _headers.update(self.http_request_headers)
+        if not headers:
+            headers = {}
+        headers.update(self.http_request_headers)
         if body:
             body = json.dumps(body)
         return self.fetch(
-            url, method=method, body=body, headers=_headers,
+            url, method=method, body=body, headers=headers,
             allow_nonstandard_methods=True,
             raise_error=False, **kwargs
         )
@@ -87,8 +86,8 @@ class BaseTestCase(tornado.testing.AsyncHTTPTestCase):
     def api_post(self, url, headers=None, body=None, **kwargs):
         return self._api_request("POST", url, headers=headers, body=body, **kwargs)
 
-    def api_put(self, url, headers=None, body=None, **kwargs):
-        return self._api_request("PUT", url, headers=headers, body=body, **kwargs)
+    # def api_put(self, url, headers=None, body=None, **kwargs):
+    #     return self._api_request("PUT", url, headers=headers, body=body, **kwargs)
 
     def api_delete(self, url, headers=None, **kwargs):
         return self._api_request("DELETE", url, headers=headers, **kwargs)
