@@ -50,9 +50,9 @@ class RoleListTestCase(RoleBaseTestCase):
     """GET /role - 查看所有角色列表
     """
 
-    def test_list_success(self):
-        """正确
-        """
+    def setUp(self):
+        super().setUp()
+
         total = 5
         basename = "fortest"
         for _ in range(total):
@@ -66,6 +66,11 @@ class RoleListTestCase(RoleBaseTestCase):
                 user.roles.append(role)
             self.db.commit()
 
+        self.total = total * total
+
+    def test_list_success(self):
+        """正确
+        """
         resp = self.api_get("/role")
         body = get_body_json(resp)
         self.assertEqual(resp.code, 200)
@@ -75,7 +80,27 @@ class RoleListTestCase(RoleBaseTestCase):
         api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), body["filter"]["page_size"])
-        self.assertEqual(body["filter"]["total"], total * total)
+        self.assertEqual(body["filter"]["total"], self.total)
+
+    def test_no_such_page(self):
+        """查无此页
+        """
+        for page in [-10, 10]:
+            resp = self.api_get(f"/role?page={page}")
+            body = get_body_json(resp)
+            self.assertEqual(resp.code, 400)
+            validate_default_error(body)
+            self.assertEqual(body["status"], f"no-such-page:{page}")
+
+    def test_unknown_sort(self):
+        """错误过滤
+        """
+        for sort_by in ["updated", "summary"]:
+            resp = self.api_get(f"/role?sort_by={sort_by}")
+            body = get_body_json(resp)
+            self.assertEqual(resp.code, 400)
+            validate_default_error(body)
+            self.assertEqual(body["status"], f"unknown-sort-by:{sort_by}")
 
 
 class RoleCreateTestCase(RoleBaseTestCase):

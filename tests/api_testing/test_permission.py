@@ -65,10 +65,8 @@ class PermissionListTestCase(_Base):
     """GET /permission - 获取权限列表
     """
 
-    def test_list_success(self):
-        """返回正确
-        """
-
+    def setUp(self):
+        super().setUp()
         total = 3
         basename = "fortest"
         for _ in range(total):
@@ -88,7 +86,11 @@ class PermissionListTestCase(_Base):
                     self.db.add(perm)
                     role.permissions.append(perm)
                 self.db.commit()
+        self.total = total * total * total
 
+    def test_list_success(self):
+        """返回正确
+        """
         resp = self.api_get("/permission")
         body = get_body_json(resp)
         self.assertEqual(resp.code, 200)
@@ -98,7 +100,17 @@ class PermissionListTestCase(_Base):
         api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), body["filter"]["page_size"])
-        self.assertEqual(body["filter"]["total"], total * total * total)
+        self.assertEqual(body["filter"]["total"], self.total)
+
+    def test_no_such_page(self):
+        """查无此页
+        """
+        for page in [-10, 10]:
+            resp = self.api_get(f"/permission?page={page}")
+            body = get_body_json(resp)
+            self.assertEqual(resp.code, 400)
+            validate_default_error(body)
+            self.assertEqual(body["status"], f"no-such-page:{page}")
 
 
 class PermissionCreateTestCase(_Base):
