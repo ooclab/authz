@@ -35,160 +35,188 @@ class _Base(BaseTestCase):
         self.user = user
         self.permission = perm
 
-
-class HasPermissionGetTestCase(_Base):
-    """使用 GET 方法查询用户是否拥有某项权限
-    """
-
-    def validate_response_200(self, user_id, permission_name, status):
-        resp = self.api_get(
-            f"/has_permission?user_id={user_id}"
-            f"&permission_name={permission_name}")
+    def validate_response_200(self, user_id, permission, status):
+        resp = self.has_permission_request(user_id, permission)
         body = get_body_json(resp)
         self.assertEqual(resp.code, 200)
         self.assertEqual(body["status"], status)
 
-    def validate_response_400(self, user_id, permission_name, status):
-        resp = self.api_get(
-            f"/has_permission?user_id={user_id}"
-            f"&permission_name={permission_name}")
+    def validate_response_400(self, user_id, permission, status):
+        resp = self.has_permission_request(user_id, permission)
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
         self.assertEqual(body["status"], status)
 
-    def test_yes(self):
-        """GET /has_permission - 检查权限存在
-        """
-        self.validate_response_200(
-            self.user.uuid, self.permission.name, "yes")
 
-    def test_no(self):
-        """POST /has_permission - 检查权限不存在
-        """
-        perm = Permission(name="new-permission")
-        self.db.add(perm)
-        self.db.commit()
+def has_permission_class_factory(name, method):
 
-        self.validate_response_200(
-            str(self.user.uuid), perm.name, "no")
+    class _BaseHasPermission(_Base):
 
-    def test_user_notexist(self):
-        """GET /has_permission - 指定的用户ID不存在
-        """
-        self.validate_response_400(
-            str(uuid.uuid4()), self.permission.name, "invalid-user")
+        def has_permission_request(self, user_id, permission_name):
+            if self.method == "GET":
+                return self.api_get(
+                    f"/has_permission?user_id={user_id}"
+                    f"&permission_name={permission_name}")
+            if self.method == "POST":
+                return self.api_post("/has_permission", body={
+                    "user_id": user_id,
+                    "permission_name": permission_name})
 
-    def test_permission_notexist(self):
-        """GET /has_permission - 指定的权限不存在
-        """
-        self.validate_response_400(
-            self.user.uuid, "notexist", "invalid-permission")
+            raise Exception("not-support-method")
 
-    def test_permission_and_user_notexist(self):
-        """GET /has_permission - 指定的用户和权限都不存在
-        """
-        self.validate_response_400(
-            str(uuid.uuid4()), "notexist", "invalid-user")
+        def test_yes(self):
+            """GET|POST /has_permission - 检查权限存在
+            """
+            self.validate_response_200(
+                str(self.user.uuid), self.permission.name, "yes")
 
+        def test_no(self):
+            """GET|POST /has_permission - 检查权限不存在
+            """
+            perm = Permission(name="new-permission")
+            self.db.add(perm)
+            self.db.commit()
 
-class HasPermissionPostTestCase(_Base):
-    """使用 POST 方法查询用户是否拥有某项权限
-    """
+            self.validate_response_200(
+                str(self.user.uuid), perm.name, "no")
 
-    def validate_response_200(self, user_id, permission_name, status):
-        resp = self.api_post("/has_permission", body={
-            "user_id": user_id,
-            "permission_name": permission_name})
-        body = get_body_json(resp)
-        self.assertEqual(resp.code, 200)
-        self.assertEqual(body["status"], status)
+        def test_user_notexist(self):
+            """GET|POST /has_permission - 指定的用户ID不存在
+            """
+            self.validate_response_400(
+                str(uuid.uuid4()), self.permission.name, "invalid-user")
 
-    def validate_response_400(self, user_id, permission_name, status):
-        resp = self.api_post("/has_permission", body={
-            "user_id": user_id,
-            "permission_name": permission_name})
-        body = get_body_json(resp)
-        self.assertEqual(resp.code, 400)
-        self.assertEqual(body["status"], status)
+        def test_permission_notexist(self):
+            """GET|POST /has_permission - 指定的权限不存在
+            """
+            self.validate_response_400(
+                str(self.user.uuid), "notexist", "invalid-permission")
 
-    def test_yes(self):
-        """POST /has_permission - 检查权限存在
-        """
-        self.validate_response_200(
-            str(self.user.uuid), self.permission.name, "yes")
+        def test_permission_and_user_notexist(self):
+            """GET|POST /has_permission - 指定的用户和权限都不存在
+            """
+            self.validate_response_400(
+                str(uuid.uuid4()), "notexist", "invalid-user")
 
-    def test_no(self):
-        """POST /has_permission - 检查权限不存在
-        """
-        perm = Permission(name="new-permission")
-        self.db.add(perm)
-        self.db.commit()
-
-        self.validate_response_200(
-            str(self.user.uuid), perm.name, "no")
-
-    def test_user_notexist(self):
-        """GET /has_permission - 指定的用户ID不存在
-        """
-        self.validate_response_400(
-            str(uuid.uuid4()), self.permission.name, "invalid-user")
-
-    def test_permission_notexist(self):
-        """GET /has_permission - 指定的权限不存在
-        """
-        self.validate_response_400(
-            str(self.user.uuid), "notexist", "invalid-permission")
-
-    def test_permission_and_user_notexist(self):
-        """GET /has_permission - 指定的用户和权限都不存在
-        """
-        self.validate_response_400(
-            str(uuid.uuid4()), "notexist", "invalid-user")
+    def __init__(self, *args, **kwargs):
+        _BaseHasPermission.__init__(self, *args, **kwargs)
+        setattr(_BaseHasPermission, "method", method)
+    newclass = type(name, (_BaseHasPermission,), {"__init__": __init__})
+    return newclass
 
 
-class HasPermissionIDGetTestCase(_Base):
-    """使用 GET 方法查询用户是否拥有某项权限（使用权限ID）
-    """
-
-    def test_success(self):
-        """GET /has_permission_id - 检查权限存在
-        """
-
-        user_id = str(self.user.uuid)
-        perm_id = str(self.permission.uuid)
-        resp = self.api_get(
-            f"/has_permission_id?user_id={user_id}"
-            f"&permission_id={perm_id}")
-        body = get_body_json(resp)
-        self.assertEqual(resp.code, 200)
-        self.assertEqual(body["status"], "yes")
-
-    def test_permission_notexist(self):
-        """GET /has_permission_id - 指定的权限ID不存在
-        """
-
-        perm_id = str(uuid.uuid4())
-        resp = self.api_get(
-            f"/has_permission_id?user_id={self.user.uuid}"
-            f"&permission_id={perm_id}")
-        body = get_body_json(resp)
-        self.assertEqual(resp.code, 400)
-        self.assertEqual(body["status"], "invalid-permission")
+HasPermissionGetTestCase = has_permission_class_factory(
+    "HasPermissionGetTestCase", "GET")
+HasPermissionPostTestCase = has_permission_class_factory(
+    "HasPermissionPostTestCase", "POST")
 
 
-class HasPermissionIDPostTestCase(_Base):
-    """使用 POST 方法查询用户是否拥有某项权限（使用权限ID）
-    """
+def has_permission_id_class_factory(name, method):
 
-    def test_success(self):
-        """POST /has_permission_id - 检查权限存在
-        """
+    class _BaseHasPermission(_Base):
 
-        user_id = str(self.user.uuid)
-        perm_id = str(self.permission.uuid)
-        resp = self.api_post("/has_permission_id", body={
-            "user_id": user_id,
-            "permission_id": perm_id})
-        body = get_body_json(resp)
-        self.assertEqual(resp.code, 200)
-        self.assertEqual(body["status"], "yes")
+        def has_permission_request(self, user_id, permission_id):
+            if self.method == "GET":
+                return self.api_get(
+                    f"/has_permission_id?user_id={user_id}"
+                    f"&permission_id={permission_id}")
+            if self.method == "POST":
+                return self.api_post("/has_permission_id", body={
+                    "user_id": user_id,
+                    "permission_id": permission_id})
+
+            raise Exception("not-support-method")
+
+        def test_yes(self):
+            """GET|POST /has_permission_id - 检查权限存在
+            """
+            self.validate_response_200(
+                str(self.user.uuid), str(self.permission.uuid), "yes")
+
+        def test_no(self):
+            """GET|POST /has_permission_id - 检查权限不存在
+            """
+            perm = Permission(name="new-permission")
+            self.db.add(perm)
+            self.db.commit()
+
+            self.validate_response_200(
+                str(self.user.uuid), str(perm.uuid), "no")
+
+        def test_user_notexist(self):
+            """GET|POST /has_permission_id - 指定的用户ID不存在
+            """
+            self.validate_response_400(
+                str(uuid.uuid4()), str(self.permission.uuid), "invalid-user")
+
+        def test_permission_notexist(self):
+            """GET|POST /has_permission_id - 指定的权限不存在
+            """
+            self.validate_response_400(
+                str(self.user.uuid), str(uuid.uuid4()), "invalid-permission")
+
+        def test_permission_and_user_notexist(self):
+            """GET|POST /has_permission_id - 指定的用户和权限都不存在
+            """
+            self.validate_response_400(
+                str(uuid.uuid4()), str(uuid.uuid4()), "invalid-user")
+
+    def __init__(self, *args, **kwargs):
+        _BaseHasPermission.__init__(self, *args, **kwargs)
+        setattr(_BaseHasPermission, "method", method)
+    newclass = type(name, (_BaseHasPermission,), {"__init__": __init__})
+    return newclass
+
+
+HasPermissionIDGetTestCase = has_permission_id_class_factory(
+    "HasPermissionIDGetTestCase", "GET")
+HasPermissionIDPostTestCase = has_permission_id_class_factory(
+    "HasPermissionIDPostTestCase", "POST")
+
+
+# class HasPermissionIDGetTestCase(_Base):
+#     """使用 GET 方法查询用户是否拥有某项权限（使用权限ID）
+#     """
+#
+#     def test_success(self):
+#         """GET /has_permission_id - 检查权限存在
+#         """
+#
+#         user_id = str(self.user.uuid)
+#         perm_id = str(self.permission.uuid)
+#         resp = self.api_get(
+#             f"/has_permission_id?user_id={user_id}"
+#             f"&permission_id={perm_id}")
+#         body = get_body_json(resp)
+#         self.assertEqual(resp.code, 200)
+#         self.assertEqual(body["status"], "yes")
+#
+#     def test_permission_notexist(self):
+#         """GET /has_permission_id - 指定的权限ID不存在
+#         """
+#
+#         perm_id = str(uuid.uuid4())
+#         resp = self.api_get(
+#             f"/has_permission_id?user_id={self.user.uuid}"
+#             f"&permission_id={perm_id}")
+#         body = get_body_json(resp)
+#         self.assertEqual(resp.code, 400)
+#         self.assertEqual(body["status"], "invalid-permission")
+#
+#
+# class HasPermissionIDPostTestCase(_Base):
+#     """使用 POST 方法查询用户是否拥有某项权限（使用权限ID）
+#     """
+#
+#     def test_success(self):
+#         """POST /has_permission_id - 检查权限存在
+#         """
+#
+#         user_id = str(self.user.uuid)
+#         perm_id = str(self.permission.uuid)
+#         resp = self.api_post("/has_permission_id", body={
+#             "user_id": user_id,
+#             "permission_id": perm_id})
+#         body = get_body_json(resp)
+#         self.assertEqual(resp.code, 200)
+#         self.assertEqual(body["status"], "yes")
