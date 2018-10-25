@@ -23,9 +23,11 @@ class _Base(BaseTestCase):
 
 
 class MyPermissionListTestCase(_Base):
+    """GET /my/permission - 查看我的权限
+    """
 
     def test_success(self):
-        """GET /my/permission - 查看我的权限列表正确
+        """返回正确
         """
         role_numbers = 10
         perm_numbers = 20
@@ -60,9 +62,11 @@ class MyPermissionListTestCase(_Base):
 
 
 class PermissionListTestCase(_Base):
+    """GET /permission - 获取权限列表
+    """
 
     def test_list_success(self):
-        """GET /permission - 获取权限列表正确
+        """返回正确
         """
 
         total = 3
@@ -98,9 +102,11 @@ class PermissionListTestCase(_Base):
 
 
 class PermissionCreateTestCase(_Base):
+    """POST /permission - 创建权限
+    """
 
     def test_name_exist(self):
-        """POST /permission - 名字已经存在
+        """名字已经存在
         """
         name = "my-permission"
         perm = Permission(name=name)
@@ -114,7 +120,7 @@ class PermissionCreateTestCase(_Base):
         self.assertEqual(body["status"], "name-exist")
 
     def test_create_success(self):
-        """POST /permission - 创建权限成功
+        """创建成功
         """
         name = "my-permission"
         resp = self.api_post("/permission", body={
@@ -131,9 +137,11 @@ class PermissionCreateTestCase(_Base):
 
 
 class PermissionViewTestCase(_Base):
+    """GET /permission/{id} - 查看指定权限详情
+    """
 
     def test_not_found(self):
-        """GET /permission/{id} - 权限ID不存在
+        """权限ID不存在
         """
 
         perm_id = str(uuid.uuid4())
@@ -141,7 +149,7 @@ class PermissionViewTestCase(_Base):
         self.validate_not_found(resp)
 
     def test_get_success(self):
-        """GET /permission/{id} - 获取权限详情正确
+        """获取详情正确
         """
         name = "my-permission"
         summary = "my summary"
@@ -168,7 +176,7 @@ class PermissionUpdateTestCase(_Base):
     """
 
     def test_not_found(self):
-        """POST /permission/{id} - 权限不存在
+        """权限不存在
         """
 
         perm_id = str(uuid.uuid4())
@@ -176,7 +184,7 @@ class PermissionUpdateTestCase(_Base):
         self.validate_not_found(resp)
 
     def test_update_success(self):
-        """POST /permission/{name} - 更新成功
+        """更新成功
         """
         name = "my-permission"
         summary = "my summary"
@@ -207,14 +215,14 @@ class PermissionDeleteTestCase(_Base):
     """
 
     def test_not_found(self):
-        """DELETE /permission/{id} - 权限不存在
+        """权限不存在
         """
         perm_id = str(uuid.uuid4())
         resp = self.api_delete(f"/permission/{perm_id}")
         self.validate_not_found(resp)
 
     def test_delete_success(self):
-        """DELETE /permission/{id} - 删除成功
+        """删除成功
         """
         role_name = "my-role"
         role = Role(name=role_name)

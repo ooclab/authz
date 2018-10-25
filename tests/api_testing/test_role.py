@@ -19,9 +19,11 @@ class RoleBaseTestCase(BaseTestCase):
 
 
 class MyRoleListTestCase(RoleBaseTestCase):
+    """GET /my/role - 查看我的角色列表
+    """
 
     def test_success(self):
-        """GET /my/role - 查看我的角色列表正确
+        """正确
         """
         numbers = 10
         basename = "myrole"
@@ -45,9 +47,11 @@ class MyRoleListTestCase(RoleBaseTestCase):
 
 
 class RoleListTestCase(RoleBaseTestCase):
+    """GET /role - 查看所有角色列表
+    """
 
     def test_list_success(self):
-        """GET /role - 查看所有角色列表正确
+        """正确
         """
         total = 5
         basename = "fortest"
@@ -75,9 +79,11 @@ class RoleListTestCase(RoleBaseTestCase):
 
 
 class RoleCreateTestCase(RoleBaseTestCase):
+    """POST /role - 创建角色
+    """
 
     def test_name_exist(self):
-        """POST /role - 使用重复的名称创建角色
+        """使用重复的名称
         """
 
         role_name = "my-role"
@@ -92,7 +98,7 @@ class RoleCreateTestCase(RoleBaseTestCase):
         self.assertEqual(body["status"], "name-exist")
 
     def test_create_success(self):
-        """POST /role - 创建角色成功
+        """创建成功
         """
         role_name = "my-role"
         resp = self.api_post("/role", body={
@@ -110,9 +116,11 @@ class RoleCreateTestCase(RoleBaseTestCase):
 
 
 class SingleRoleViewTestCase(RoleBaseTestCase):
+    """GET /role/{id} - 查看指定的角色详情
+    """
 
     def test_not_found(self):
-        """GET /role/{id} - 角色ID不存在
+        """角色ID不存在
         """
 
         role_id = str(uuid.uuid4())
@@ -120,7 +128,7 @@ class SingleRoleViewTestCase(RoleBaseTestCase):
         self.validate_not_found(resp)
 
     def test_get_success(self):
-        """GET /role/{id} - 获取角色详情成功
+        """正确
         """
         role_name = "my-role"
         role_summary = "my summary"
@@ -147,14 +155,14 @@ class RoleUpdateTestCase(RoleBaseTestCase):
     """
 
     def test_not_found(self):
-        """POST /role/{id} - 角色不存在
+        """角色ID不存在
         """
         role_id = str(uuid.uuid4())
         resp = self.api_post(f"/role/{role_id}")
         self.validate_not_found(resp)
 
     def test_update_success(self):
-        """POST /role/{id} - 更新成功
+        """更新成功
         """
 
         name = "my-role"
@@ -186,14 +194,14 @@ class RoleDeleteTestCase(RoleBaseTestCase):
     """
 
     def test_not_found(self):
-        """DELETE /role/{id} - 角色不存在
+        """角色ID不存在
         """
         role_id = str(uuid.uuid4())
         resp = self.api_delete(f"/role/{role_id}")
         self.validate_not_found(resp)
 
     def test_delete_success(self):
-        """DELETE /role/{id} - 删除成功
+        """删除成功
         """
         user_id = self.current_user.id
 
@@ -226,14 +234,14 @@ class RolePermissionListTestCase(RoleBaseTestCase):
     """
 
     def test_not_found(self):
-        """GET /role/{id}/permission - 使用不存在的角色ID
+        """使用不存在的角色ID
         """
         role_id = str(uuid.uuid4())
         resp = self.api_get(f"/role/{role_id}/permission")
         self.validate_not_found(resp)
 
     def test_get_success(self):
-        """GET /role/{id}/permission - 获取指定角色的权限列表成功
+        """正确
         """
         role_name = "my-role"
         role = Role(name=role_name)
@@ -264,14 +272,14 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
     """
 
     def test_not_found(self):
-        """POST /role/{id}/permission/append - 使用不存在的角色ID
+        """使用不存在的角色ID
         """
         role_id = str(uuid.uuid4())
         resp = self.api_post(f"/role/{role_id}/permission/append")
         self.validate_not_found(resp)
 
     def test_post_success(self):
-        """POST /role/{id}/permission/append - 增加权限成功
+        """增加权限成功
         """
         role_name = "my-role"
         role = Role(name=role_name)
@@ -309,7 +317,7 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
         )
 
     def test_notexist_permissions(self):
-        """POST /role/{id}/permission/append - 使用不存在的权限ID
+        """使用不存在的权限ID
         """
         role_name = "my-role"
         role = Role(name=role_name)
@@ -336,14 +344,14 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
     """
 
     def test_not_found(self):
-        """POST /role/{id}/permission/remove - 使用不存在的角色ID
+        """使用不存在的角色ID
         """
         role_id = str(uuid.uuid4())
         resp = self.api_post(f"/role/{role_id}/permission/remove")
         self.validate_not_found(resp)
 
     def test_post_success(self):
-        """POST /role/{id}/permission/remove - 删除权限成功
+        """删除权限成功
         """
         role_name = "my-role"
         role = Role(name=role_name)
@@ -375,7 +383,7 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
         )
 
     def test_notexist_permissions(self):
-        """POST /role/{id}/permission/remove - 使用不存在的权限ID
+        """使用不存在的权限ID
         """
         role_name = "my-role"
         role = Role(name=role_name)

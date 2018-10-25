@@ -35,6 +35,13 @@ class _Base(BaseTestCase):
         self.user = user
         self.permission = perm
 
+    def shortDescription(self):
+        class_doc = self.__doc__
+        doc = self._testMethodDoc
+        first = class_doc.split("\n")[0].strip() if class_doc else None
+        second = doc.split("\n")[0].strip() if doc else None
+        return f"{self.method.upper()} {first} : {second}"
+
     def validate_response_200(self, user_id, permission, status):
         resp = self.has_permission_request(user_id, permission)
         body = get_body_json(resp)
@@ -51,6 +58,8 @@ class _Base(BaseTestCase):
 def has_permission_class_factory(name, method):
 
     class _BaseHasPermission(_Base):
+        """GET|POST /has_permission - 鉴权（使用权限名称）
+        """
 
         def has_permission_request(self, user_id, permission_name):
             if self.method == "GET":
@@ -65,13 +74,13 @@ def has_permission_class_factory(name, method):
             raise Exception("not-support-method")
 
         def test_yes(self):
-            """GET|POST /has_permission - 检查权限存在
+            """检查权限存在
             """
             self.validate_response_200(
                 str(self.user.uuid), self.permission.name, "yes")
 
         def test_no(self):
-            """GET|POST /has_permission - 检查权限不存在
+            """检查权限不存在
             """
             perm = Permission(name="new-permission")
             self.db.add(perm)
@@ -81,19 +90,19 @@ def has_permission_class_factory(name, method):
                 str(self.user.uuid), perm.name, "no")
 
         def test_user_notexist(self):
-            """GET|POST /has_permission - 指定的用户ID不存在
+            """指定的用户ID不存在
             """
             self.validate_response_400(
                 str(uuid.uuid4()), self.permission.name, "invalid-user")
 
         def test_permission_notexist(self):
-            """GET|POST /has_permission - 指定的权限不存在
+            """指定的权限不存在
             """
             self.validate_response_400(
                 str(self.user.uuid), "notexist", "invalid-permission")
 
         def test_permission_and_user_notexist(self):
-            """GET|POST /has_permission - 指定的用户和权限都不存在
+            """指定的用户和权限都不存在
             """
             self.validate_response_400(
                 str(uuid.uuid4()), "notexist", "invalid-user")
@@ -102,6 +111,7 @@ def has_permission_class_factory(name, method):
         _BaseHasPermission.__init__(self, *args, **kwargs)
         setattr(_BaseHasPermission, "method", method)
     newclass = type(name, (_BaseHasPermission,), {"__init__": __init__})
+    newclass.__doc__ = "/has_permission - 鉴权（使用权限名称）"
     return newclass
 
 
@@ -128,13 +138,13 @@ def has_permission_id_class_factory(name, method):
             raise Exception("not-support-method")
 
         def test_yes(self):
-            """GET|POST /has_permission_id - 检查权限存在
+            """检查权限存在
             """
             self.validate_response_200(
                 str(self.user.uuid), str(self.permission.uuid), "yes")
 
         def test_no(self):
-            """GET|POST /has_permission_id - 检查权限不存在
+            """检查权限不存在
             """
             perm = Permission(name="new-permission")
             self.db.add(perm)
@@ -144,19 +154,19 @@ def has_permission_id_class_factory(name, method):
                 str(self.user.uuid), str(perm.uuid), "no")
 
         def test_user_notexist(self):
-            """GET|POST /has_permission_id - 指定的用户ID不存在
+            """指定的用户ID不存在
             """
             self.validate_response_400(
                 str(uuid.uuid4()), str(self.permission.uuid), "invalid-user")
 
         def test_permission_notexist(self):
-            """GET|POST /has_permission_id - 指定的权限不存在
+            """指定的权限不存在
             """
             self.validate_response_400(
                 str(self.user.uuid), str(uuid.uuid4()), "invalid-permission")
 
         def test_permission_and_user_notexist(self):
-            """GET|POST /has_permission_id - 指定的用户和权限都不存在
+            """指定的用户和权限都不存在
             """
             self.validate_response_400(
                 str(uuid.uuid4()), str(uuid.uuid4()), "invalid-user")
@@ -165,6 +175,7 @@ def has_permission_id_class_factory(name, method):
         _BaseHasPermission.__init__(self, *args, **kwargs)
         setattr(_BaseHasPermission, "method", method)
     newclass = type(name, (_BaseHasPermission,), {"__init__": __init__})
+    newclass.__doc__ = "/has_permission_id - 鉴权（使用权限ID）"
     return newclass
 
 

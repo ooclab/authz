@@ -2,9 +2,11 @@ from .base import BaseTestCase
 
 
 class HealthTestCase(BaseTestCase):
+    """GET /_health - 健康检查
+    """
 
     def test_health(self):
-        """GET /_health - 健康检查
+        """返回正确
         """
 
         resp = self.fetch("/_health")
@@ -13,9 +15,11 @@ class HealthTestCase(BaseTestCase):
 
 
 class SpecTestCase(BaseTestCase):
+    """GET / - SwaggerUI 文档
+    """
 
     def test_spec(self):
-        """GET / - SwaggerUI 文档
+        """返回正确
         """
 
         resp = self.fetch("/")

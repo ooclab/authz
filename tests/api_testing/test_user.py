@@ -18,9 +18,11 @@ class _BaseTestCase(BaseTestCase):
 
 
 class UserRoleListTestCase(_BaseTestCase):
+    """GET /user/{id}/role - 查看用户的角色列表
+    """
 
     def test_success(self):
-        """GET /user/{id}/role - 查看用户的角色列表正确
+        """正确
         """
 
         user = User(uuid=str(uuid.uuid4()))
@@ -75,12 +77,12 @@ class UserRoleAppendTestCase(_BaseTestCase):
             sorted([role.name for role in user.roles]))
 
     def test_user_notexist(self):
-        """POST /user/{id}/role/append - 使用不存在的用户ID
+        """使用不存在的用户ID
         """
         self.append_roles(str(uuid.uuid4()))
 
     def test_user_exist(self):
-        """POST /user/{id}/role/append - 使用存在的用户ID
+        """使用存在的用户ID
         """
 
         user = User(uuid=str(uuid.uuid4()))
@@ -89,7 +91,7 @@ class UserRoleAppendTestCase(_BaseTestCase):
         self.append_roles(str(user.uuid))
 
     def test_notexist_roles(self):
-        """POST /user/{id}/role/append - 使用不存在的角色ID
+        """使用不存在的角色ID
         """
         user_id = str(uuid.uuid4())
         notexist_total = 12
@@ -112,14 +114,14 @@ class UserRoleRemoveTestCase(_BaseTestCase):
     """
 
     def test_not_found(self):
-        """POST /user/{id}/role/remove - 使用不存在的用户ID
+        """使用不存在的用户ID
         """
         user_id = str(uuid.uuid4())
         resp = self.api_post(f"/user/{user_id}/role/remove")
         self.validate_not_found(resp)
 
     def test_remove_success(self):
-        """POST /user/{id}/role/remove - 删除用户的角色成功
+        """删除成功
         """
         user = User(uuid=str(uuid.uuid4()))
         self.db.add(user)
@@ -154,7 +156,7 @@ class UserRoleRemoveTestCase(_BaseTestCase):
         )
 
     def test_notexist_roles(self):
-        """POST /user/{id}/role/remove - 使用不存在的角色ID
+        """使用不存在的角色ID
         """
         user_id = str(uuid.uuid4())
         user = User(uuid=user_id)

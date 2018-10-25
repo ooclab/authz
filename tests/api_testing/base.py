@@ -22,6 +22,14 @@ def get_body_json(resp):
 
 
 class BaseTestCase(tornado.testing.AsyncHTTPTestCase):
+
+    def shortDescription(self):
+        class_doc = self.__doc__
+        doc = self._testMethodDoc
+        first = class_doc.split("\n")[0].strip() if class_doc else None
+        second = doc.split("\n")[0].strip() if doc else None
+        return f"{first} : {second}"
+
     def get_app(self):
         settings.DEBUG = False
         return make_app()
