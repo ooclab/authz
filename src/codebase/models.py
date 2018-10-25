@@ -3,11 +3,11 @@
 import datetime
 import uuid
 
-from sqlalchemy import event
 from sqlalchemy_utils import UUIDType
 from eva.conf import settings
 from eva.utils.time_ import utc_rfc3339_string
 from sqlalchemy import (
+    event,
     Column,
     DateTime,
     ForeignKey,
