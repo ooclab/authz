@@ -24,11 +24,19 @@ class Bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
+# ok '\033[92m\u2713\033[0m'
 # \u21E8 输出 ⇨
 # \u21B3 输出 ↳
+# \u21E2 输出 ⇢
+# \u2B91 输出 ⮑
+# \u2937 输出 ⤷
+# \u27F3 输出 ⟳
+# \u2B51 输出 ⭑
+# \u2713 输出 ✓
+
+
 FIRST_ARROW = f"{Bcolors.OKGREEN}\u21E8{Bcolors.ENDC}"
-SECOND_ARROW = f"{Bcolors.WARNING}\u21B3{Bcolors.ENDC}"
+SECOND_ARROW = f"{Bcolors.WARNING}\u21E2{Bcolors.ENDC}"
 
 
 def validate_default_error(body):
