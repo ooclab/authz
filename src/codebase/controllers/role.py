@@ -1,7 +1,5 @@
 # pylint: disable=W0223,W0221,broad-except
 
-import logging
-
 from codebase.web import (
     APIRequestHandler,
     authenticated,
@@ -107,15 +105,8 @@ class SingleRoleHandler(_BaseSingleRoleHandler):
         """删除角色
         """
         role = self.get_role(_id)
-        try:
-            self._remove_role(role)
-        except Exception as err:
-            logging.error("rollback: cancel delete role %s",
-                          _id, exc_info=True)
-            self.db.rollback()
-            self.fail(str(err))
-            return
-
+        # TODO: how to rollback ?
+        self._remove_role(role)
         self.success()
 
     def _remove_role(self, role):

@@ -1,7 +1,5 @@
 # pylint: disable=W0221,W0223,broad-except
 
-import logging
-
 from codebase.web import (
     APIRequestHandler,
     authenticated,
@@ -99,16 +97,8 @@ class SinglePermissionHandler(_BaseSinglePermissionHandler):
         """删除权限
         """
         perm = self.get_permission(_id)
-        try:
-            self._remove_permission(perm)
-        except Exception as err:
-            logging.error(
-                'rollback: cancel delete permission "%s"', _id, exc_info=True
-            )
-            self.db.rollback()
-            self.fail(str(err))
-            return
-
+        # TODO: how to rollback ?
+        self._remove_permission(perm)
         self.success()
 
     def _remove_permission(self, perm):
