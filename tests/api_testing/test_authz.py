@@ -1,5 +1,7 @@
 import uuid
 
+from eva.conf import settings
+
 from codebase.models import (
     User,
     Permission,
@@ -77,6 +79,18 @@ def has_permission_class_factory(name, method):
             self.validate_response_200(
                 str(self.user.uuid), self.permission.name, "yes")
 
+        def test_admin_yes(self):
+            """检查超级用户权限存在
+            """
+            perm = Permission(name="new-permission")
+            self.db.add(perm)
+            role = Role(name=settings.ADMIN_ROLE_NAME)
+            self.user.roles.append(role)
+            self.db.commit()
+
+            self.validate_response_200(
+                str(self.user.uuid), perm.name, "yes")
+
         def test_no(self):
             """检查权限不存在
             """
@@ -138,6 +152,18 @@ def has_permission_id_class_factory(name, method):
             """
             self.validate_response_200(
                 str(self.user.uuid), str(self.permission.uuid), "yes")
+
+        def test_admin_yes(self):
+            """检查超级用户权限存在
+            """
+            perm = Permission(name="new-permission")
+            self.db.add(perm)
+            role = Role(name=settings.ADMIN_ROLE_NAME)
+            self.user.roles.append(role)
+            self.db.commit()
+
+            self.validate_response_200(
+                str(self.user.uuid), str(perm.uuid), "yes")
 
         def test_no(self):
             """检查权限不存在
