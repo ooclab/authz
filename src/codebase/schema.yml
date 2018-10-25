@@ -577,6 +577,43 @@ paths:
           schema:
             $ref: '#/definitions/DefaultErrorResponse'
 
+  "/role/id":
+
+    parameters:
+    - $ref: '#/parameters/Authorization'
+
+    get:
+      tags:
+      - role
+      summary: 通过给定的角色名获取角色ID
+      parameters:
+      - name: name
+        in: query
+        required: true
+        description: 角色名
+        type: string
+        maxLength: 64
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                default: "success"
+              id:
+                type: string
+                format: uuid
+                description: 角色ID
+        default:
+          description: |
+            返回错误信息
+            error 值及含义：
+            - `not-found` : 名称不存在
+          schema:
+            $ref: '#/definitions/DefaultErrorResponse'
+
   "/role/{id}":
 
     parameters:
