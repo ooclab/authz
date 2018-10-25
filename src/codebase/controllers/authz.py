@@ -47,7 +47,7 @@ class HasPermissionHandler(_Base):
     def do_has_permission(self, user_id, perm_name):
         user = self.get_user(user_id)
         perm = self.get_permission_by_name(perm_name)
-        if user.has_permission(perm.name):
+        if user.has_permission(perm):
             self.success(status="yes")
         else:
             self.success(status="no")
@@ -69,7 +69,7 @@ class HasPermissionIDHandler(_Base):
     def do_has_permission(self, user_id, perm_id):
         user = self.get_user(user_id)
         perm = self.get_permission_by_id(perm_id)
-        if user.has_permission(perm.name):
+        if user.has_permission(perm):
             self.success(status="yes")
         else:
             self.success(status="no")
