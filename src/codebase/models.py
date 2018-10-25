@@ -1,8 +1,9 @@
-# pylint: disable=R0902,E1101,W0201,too-few-public-methods
+# pylint: disable=R0902,E1101,W0201,too-few-public-methods,W0613
 
 import datetime
 import uuid
 
+from sqlalchemy import event
 from sqlalchemy_utils import UUIDType
 from eva.conf import settings
 from eva.utils.time_ import utc_rfc3339_string
@@ -18,10 +19,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from codebase.utils.sqlalchemy import ORMBase
-
-ACCESS_TYPE_NORMAL = 1
-ACCESS_TYPE_CLIENT = 2
+from codebase.utils.sqlalchemy import ORMBase, dbc
 
 
 _USER_ROLES = Table(
@@ -130,3 +128,13 @@ class User(ORMBase):
                 if perm.id == permission.id:
                     return True
         return False
+
+
+# 第一次创建 Role 表时创建一些默认角色
+@event.listens_for(Role.__table__, 'after_create')
+def insert_initial_roles(*args, **kwargs):
+    db = dbc.session()
+    db.add(Role(name=settings.ADMIN_ROLE_NAME))
+    db.add(Role(name='anonymous'))
+    db.add(Role(name='authenticated'))
+    db.commit()

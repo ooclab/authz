@@ -90,7 +90,9 @@ def has_permission_class_factory(name, method):
             """
             perm = Permission(name="new-permission")
             self.db.add(perm)
-            role = Role(name=settings.ADMIN_ROLE_NAME)
+            # admin 角色数据库初始化时已经插入
+            role = self.db.query(Role).filter_by(
+                name=settings.ADMIN_ROLE_NAME).first()
             self.user.roles.append(role)
             self.db.commit()
 
@@ -164,7 +166,8 @@ def has_permission_id_class_factory(name, method):
             """
             perm = Permission(name="new-permission")
             self.db.add(perm)
-            role = Role(name=settings.ADMIN_ROLE_NAME)
+            role = self.db.query(Role).filter_by(
+                name=settings.ADMIN_ROLE_NAME).first()
             self.user.roles.append(role)
             self.db.commit()
 

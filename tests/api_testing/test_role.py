@@ -80,7 +80,8 @@ class RoleListTestCase(RoleBaseTestCase):
         api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), body["filter"]["page_size"])
-        self.assertEqual(body["filter"]["total"], self.total)
+        self.assertEqual(body["filter"]["total"], self.total + 3)
+        # 系统初始化了3个角色
 
     def test_no_such_page(self):
         """查无此页
