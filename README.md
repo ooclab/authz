@@ -19,7 +19,7 @@ The authorization (authz) service for service-oriented architecture
 `authz` **不提供** ：
 
 1. **用户** 管理：创建、删除、更新、登录、退出、...
-2. **接口** 校验：如接口的访问权限，请求参数是否合理等， 需要和 [ga](https://github.com/ooclab/ga) （或类似的 API Gateway 软件）一起对外提供服务
+2. **接口** 校验：如接口的访问权限，请求参数是否合规等， 需要和 [ga](https://github.com/ooclab/ga) （或类似的 API Gateway 软件）一起对外提供服务
 
 
 ## 文档目录
