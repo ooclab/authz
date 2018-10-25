@@ -12,7 +12,7 @@ from codebase.controllers import (
 HANDLERS = [
     # TODO: 以下几个标准的接口应该工具层面统一提供, 务必显示定义
 
-    url(r"/",
+    url(r"/_spec",
         default.SpecHandler),
 
     url(r"/_health",
