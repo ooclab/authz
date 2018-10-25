@@ -428,3 +428,34 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
 
         self.assertEqual(body["status"], "have-not-exist")
         self.assertEqual(len(body["data"]), notexist_total)
+
+
+class RoleIDByNameTestCase(RoleBaseTestCase):
+    """GET /role/id - 通过角色名查看ID
+    """
+
+    def test_not_found(self):
+        """角色名不存在
+        """
+
+        resp = self.api_get(f"/role/id?name=notexist")
+        self.validate_not_found(resp)
+
+    def test_get_success(self):
+        """正确
+        """
+        role_name = "my-role"
+        role_summary = "my summary"
+        role = Role(name=role_name, summary=role_summary)
+        self.db.add(role)
+        self.db.commit()
+
+        resp = self.api_get(f"/role/id?name={role.name}")
+        body = get_body_json(resp)
+        self.assertEqual(resp.code, 200)
+        self.validate_default_success(body)
+
+        spec = self.rs.get_role_id.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
+
+        self.assertEqual(body["id"], str(role.uuid))

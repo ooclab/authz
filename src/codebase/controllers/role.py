@@ -170,3 +170,15 @@ class RolePermissionRemoveHandler(_BaseSingleRoleHandler):
             role.permissions.remove(perm)
         self.db.commit()
         self.success()
+
+
+class RoleIDByNameHandler(APIRequestHandler):
+
+    def get(self):
+        name = self.get_query_argument("name")
+        role = self.db.query(Role).filter_by(name=name).first()
+        if not role:
+            self.fail("not-found")
+            return
+
+        self.success(id=str(role.uuid))
