@@ -390,7 +390,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ObjectCreateSucces'
+            $ref: '#/definitions/ObjectCreateSuccess'
         default:
           description: |
             返回错误信息
@@ -806,7 +806,7 @@ definitions:
       - 其他表示错误
     default: "success"
 
-  ObjectCreateSucces:
+  ObjectCreateSuccess:
     type: object
     properties:
       status:
