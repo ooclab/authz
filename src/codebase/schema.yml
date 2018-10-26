@@ -1088,3 +1088,7 @@ parameters:
     minimum: 10
     maximum: 100
     description: 页数大小
+
+externalDocs:
+  description: "更多详细文档"
+  url: "https://github.com/ooclab/authz"
