@@ -7,7 +7,6 @@ from codebase.models import (
     Permission,
     Role
 )
-from codebase.utils.sqlalchemy import dbc
 from codebase.utils.swaggerui import api
 
 from .base import (
@@ -252,8 +251,7 @@ class PermissionDeleteTestCase(_Base):
         self.assertEqual(resp.code, 200)
         self.validate_default_success(body)
 
-        dbc.remove()
-
+        del perm
         perm = self.db.query(Permission).filter_by(name=perm_name).first()
         self.assertIs(perm, None)
 
