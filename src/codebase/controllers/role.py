@@ -1,6 +1,11 @@
 # pylint: disable=W0223,W0221,broad-except
 
+import logging
+from hashlib import md5
+
 from tornado.web import HTTPError
+from tornado.httpclient import AsyncHTTPClient
+from eva.conf import settings
 
 from codebase.web import (
     APIRequestHandler,
@@ -11,6 +16,18 @@ from codebase.models import (
     Role
 )
 from codebase.utils.sqlalchemy.page import get_list
+
+
+def compute_checksum(v):
+    if not isinstance(v, bytes):
+        v = v.encode("utf8")
+    return md5(bytes(v)).hexdigest()
+
+
+def get_permission_role_key(role, permission):
+    perm_checksum = compute_checksum(permission.name)
+    role_checksum = compute_checksum(role.name)
+    return f"/auth/permission/{perm_checksum}/role/{role_checksum}"
 
 
 class MyRoleHandler(APIRequestHandler):
@@ -135,7 +152,7 @@ class RolePermissionHandler(_BaseSingleRoleHandler):
 
 class RolePermissionAppendHandler(_BaseSingleRoleHandler):
 
-    def post(self, _id):
+    async def post(self, _id):
         """增加指定角色的权限
         """
         role = self.get_role(_id)
@@ -146,6 +163,17 @@ class RolePermissionAppendHandler(_BaseSingleRoleHandler):
             self.fail(error="have-not-exist", data=notexist)
             return
 
+        # sync to etcd
+        if settings.SYCN_ETCD:
+            for perm in perms:
+                key = get_permission_role_key(role, perm)
+                url = settings.ETCD_URL_ENDPOINT + key
+                http_client = AsyncHTTPClient()
+                try:
+                    await http_client.fetch(url, method="PUT", body=role.name)
+                except Exception as e:
+                    logging.error("add permission to role at etcd error: %s", e)
+
         # append permissions
         role.permissions.extend(perms)
         self.db.commit()
@@ -154,7 +182,7 @@ class RolePermissionAppendHandler(_BaseSingleRoleHandler):
 
 class RolePermissionRemoveHandler(_BaseSingleRoleHandler):
 
-    def post(self, _id):
+    async def post(self, _id):
         """删除指定角色的权限
         """
         role = self.get_role(_id)
@@ -164,6 +192,18 @@ class RolePermissionRemoveHandler(_BaseSingleRoleHandler):
         if notexist:
             self.fail(error="have-not-exist", data=notexist)
             return
+
+        # sync to etcd
+        if settings.SYCN_ETCD:
+            for perm in perms:
+                key = get_permission_role_key(role, perm)
+                url = settings.ETCD_URL_ENDPOINT + key
+                http_client = AsyncHTTPClient()
+                try:
+                    # FIXME: handle error
+                    await http_client.fetch(url, method="DELETE", raise_error=False)
+                except Exception as e:
+                    logging.error("delete permission from role at etcd error: %s", e)
 
         # remove permissions
         for perm in perms:
