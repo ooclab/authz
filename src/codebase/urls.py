@@ -80,6 +80,9 @@ HANDLERS = [
     url(r"/permission",
         permission.PermissionHandler),
 
+    url(r"/permission/id",
+        permission.PermissionIDByNameHandler),
+
     url(r"/permission/"
         r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
         permission.SinglePermissionHandler),

@@ -110,3 +110,15 @@ class SinglePermissionHandler(_BaseSinglePermissionHandler):
         self.db.delete(perm)
 
         self.db.commit()
+
+
+class PermissionIDByNameHandler(APIRequestHandler):
+
+    def get(self):
+        name = self.get_query_argument("name")
+        perm = self.db.query(Permission).filter_by(name=name).first()
+        if not perm:
+            self.fail("not-found")
+            return
+
+        self.success(id=str(perm.uuid))

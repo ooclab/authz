@@ -257,3 +257,34 @@ class PermissionDeleteTestCase(_Base):
 
         role = self.db.query(Role).filter_by(name=role_name).one()
         self.assertNotIn(perm_name, [p.name for p in role.permissions])
+
+
+class PermissionIDByNameTestCase(_Base):
+    """GET /permission/id - 通过权限名查看ID
+    """
+
+    def test_not_found(self):
+        """name not exist
+        """
+
+        resp = self.api_get(f"/permission/id?name=notexist")
+        self.validate_not_found(resp)
+
+    def test_get_success(self):
+        """success
+        """
+        name = "my-permission"
+        summary = "my summary"
+        perm = Permission(name=name, summary=summary)
+        self.db.add(perm)
+        self.db.commit()
+
+        resp = self.api_get(f"/permission/id?name={perm.name}")
+        body = get_body_json(resp)
+        self.assertEqual(resp.code, 200)
+        self.validate_default_success(body)
+
+        spec = self.rs.get_permission_id.op_spec["responses"]["200"]["schema"]
+        api.validate_object(spec, body)
+
+        self.assertEqual(body["id"], str(perm.uuid))
