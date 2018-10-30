@@ -331,7 +331,7 @@ paths:
 
     get:
       tags:
-      - role
+      - permission
       summary: 通过给定的权限名获取权限ID
       parameters:
       - name: name
