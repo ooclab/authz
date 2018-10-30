@@ -57,6 +57,7 @@ paths:
     - $ref: '#/parameters/Authorization'
 
     get:
+      deprecated: true
       tags:
       - authz
       summary: 检查用户权限（GET方法）
@@ -86,6 +87,7 @@ paths:
             $ref: '#/definitions/DefaultErrorResponse'
 
     post:
+      deprecated: true
       tags:
       - authz
       summary: 检查指定用户是否有对应的权限（使用权限名称）
@@ -128,6 +130,7 @@ paths:
     - $ref: '#/parameters/Authorization'
 
     get:
+      deprecated: true
       tags:
       - authz
       summary: 检查用户权限（GET方法）
@@ -157,6 +160,7 @@ paths:
             $ref: '#/definitions/DefaultErrorResponse'
 
     post:
+      deprecated: true
       tags:
       - authz
       summary: 检查指定用户是否有对应的权限（使用权限ID）
