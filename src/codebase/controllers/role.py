@@ -1,11 +1,13 @@
 # pylint: disable=W0223,W0221,broad-except
 
 import logging
+import json
 from hashlib import md5
 
 from tornado.web import HTTPError
 from tornado.httpclient import AsyncHTTPClient
 from eva.conf import settings
+from etcd3 import Client
 
 from codebase.web import (
     APIRequestHandler,
@@ -24,10 +26,8 @@ def compute_checksum(v):
     return md5(bytes(v)).hexdigest()
 
 
-def get_permission_role_key(role, permission):
-    perm_checksum = compute_checksum(permission.name)
-    role_checksum = compute_checksum(role.name)
-    return f"/auth/permission/{perm_checksum}/role/{role_checksum}"
+def get_permission_role_key(permission):
+    return f"ga.auth.permissions.{permission}.roles"
 
 
 class MyRoleHandler(APIRequestHandler):
@@ -160,14 +160,22 @@ class RolePermissionAppendHandler(_BaseSingleRoleHandler):
 
         # sync to etcd
         if settings.SYCN_ETCD:
-            for perm in perms:
-                key = get_permission_role_key(role, perm)
-                url = settings.ETCD_URL_ENDPOINT + key
-                http_client = AsyncHTTPClient()
-                try:
-                    await http_client.fetch(url, method="PUT", body=role.name)
-                except Exception as e:
-                    logging.error("add permission to role at etcd error: %s", e)
+
+            # create etcd client
+            for endpoint in settings.ETCD_ENDPOINTS.split(";"):
+                host, port = endpoint.split(":")
+                client = Client(host, int(port))
+                break  # FIXME: try when failed
+
+            key = get_permission_role_key(perm.name)
+            new_roles = []
+
+            r = client.range(key)
+            if r.count == 1:
+                new_roles.extend(json.loads(r.kvs[0].value))
+            if role.name not in new_roles:
+                new_roles.append(role.name)
+            client.put(key, json.dumps(new_roles))
 
         # append permissions
         role.permissions.extend(perms)
@@ -202,7 +210,7 @@ class RolePermissionRemoveHandler(_BaseSingleRoleHandler):
         # sync to etcd
         if settings.SYCN_ETCD:
             for perm in perms:
-                key = get_permission_role_key(role, perm)
+                key = get_permission_role_key(perm)
                 url = settings.ETCD_URL_ENDPOINT + key
                 http_client = AsyncHTTPClient()
                 try:
