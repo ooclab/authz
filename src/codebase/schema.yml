@@ -720,6 +720,10 @@ paths:
       tags:
       - role
       summary: 为指定角色增加权限
+      description: |
+        注意：
+        1. 如果角色名称不存在，则创建该角色
+        2. 如果权限名称不存在，则创建该权限
       parameters:
       - $ref: '#/parameters/Authorization'
       - name: body
@@ -746,16 +750,7 @@ paths:
         default:
           description: 返回错误信息
           schema:
-            type: object
-            properties:
-              status:
-                type: string
-                default: "have-not-exist"
-              data:
-                type: array
-                items:
-                  type: string
-                  description: 权限名称
+            $ref: '#/definitions/DefaultErrorResponse'
 
   "/role/permission/remove":
 

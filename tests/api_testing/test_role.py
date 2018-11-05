@@ -296,15 +296,17 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
     """
 
     def test_not_found(self):
-        """使用不存在的角色ID
+        """使用空的权限名称
+
+        TODO: 可以抛弃，让 SwaggerUI Spec 验证
         """
         resp = self.api_post("/role/permission/append", body={
-            "role": "not-exist-role"})
+            "role": "not-exist-role", "permissions": []})
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
         validate_default_error(body)
 
-        self.assertEqual(body["status"], "role-not-found")
+        self.assertEqual(body["status"], "no-permissions")
 
     def test_post_success(self):
         """增加权限成功
@@ -359,14 +361,8 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
             "permissions": [str(uuid.uuid4()) for i in range(notexist_total)],
         })
         body = get_body_json(resp)
-        self.assertEqual(resp.code, 400)
-
-        spec = self.rs.post_role_permission_append.op_spec[
-            "responses"]["default"]["schema"]
-        api.validate_object(spec, body)
-
-        self.assertEqual(body["status"], "have-not-exist")
-        self.assertEqual(len(body["data"]), notexist_total)
+        self.assertEqual(resp.code, 200)
+        self.validate_default_success(body)
 
 
 class RolePermissionRemoveTestCase(RoleBaseTestCase):

@@ -84,23 +84,6 @@ class _BaseSingleRoleHandler(APIRequestHandler):
             return role
         raise HTTPError(400, reason="not-found")
 
-    def get_permissions(self, perm_names):
-        """通过给定的权限ID列表，查询对应的权限对象
-
-        返回：
-        1. `perms` : 找到的权限对象列表
-        2. `notexist` : 没有找到的权限ID列表
-        """
-        notexsit = []
-        perms = []
-        for perm_name in perm_names:
-            perm = self.db.query(Permission).filter_by(name=perm_name).first()
-            if perm:
-                perms.append(perm)
-            else:
-                notexsit.append(perm_name)
-        return perms, notexsit
-
 
 class SingleRoleHandler(_BaseSingleRoleHandler):
 
@@ -158,12 +141,21 @@ class RolePermissionAppendHandler(_BaseSingleRoleHandler):
         body = self.get_body_json()
         role = self.db.query(Role).filter_by(name=body["role"]).first()
         if not role:
-            self.fail("role-not-found")
-            return
+            role = Role(name=body["role"])
+            self.db.add(role)
+            self.db.commit()
 
-        perms, notexist = self.get_permissions(body["permissions"])
-        if notexist:
-            self.fail(error="have-not-exist", data=notexist)
+        perms = []
+        for perm_name in body["permissions"]:
+            perm = self.db.query(Permission).filter_by(name=perm_name).first()
+            if not perm:
+                perm = Permission(name=perm_name)
+                self.db.add(perm)
+                self.db.commit()
+            perms.append(perm)
+
+        if not perms:
+            self.fail("no-permissions")
             return
 
         # sync to etcd
@@ -194,7 +186,15 @@ class RolePermissionRemoveHandler(_BaseSingleRoleHandler):
             self.fail("role-not-found")
             return
 
-        perms, notexist = self.get_permissions(body["permissions"])
+        notexist = []
+        perms = []
+        for perm_name in body["permissions"]:
+            perm = self.db.query(Permission).filter_by(name=perm_name).first()
+            if perm:
+                perms.append(perm)
+            else:
+                notexist.append(perm_name)
+
         if notexist:
             self.fail(error="have-not-exist", data=notexist)
             return
