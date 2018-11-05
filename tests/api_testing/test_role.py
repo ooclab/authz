@@ -292,15 +292,19 @@ class RolePermissionListTestCase(RoleBaseTestCase):
 
 
 class RolePermissionAppendTestCase(RoleBaseTestCase):
-    """POST /role/{id}/permission/append - 增加指定角色的权限
+    """POST /role/permission/append - 增加指定角色的权限
     """
 
     def test_not_found(self):
         """使用不存在的角色ID
         """
-        role_id = str(uuid.uuid4())
-        resp = self.api_post(f"/role/{role_id}/permission/append")
-        self.validate_not_found(resp)
+        resp = self.api_post("/role/permission/append", body={
+            "role": "not-exist-role"})
+        body = get_body_json(resp)
+        self.assertEqual(resp.code, 400)
+        validate_default_error(body)
+
+        self.assertEqual(body["status"], "role-not-found")
 
     def test_post_success(self):
         """增加权限成功
@@ -327,7 +331,8 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
             self.db.commit()
             append_permission_list.append(str(perm.uuid))
 
-        resp = self.api_post(f"/role/{role.uuid}/permission/append", body={
+        resp = self.api_post("/role/permission/append", body={
+            "role": role.name,
             "permissions": append_permission_list,
         })
         body = get_body_json(resp)
@@ -349,13 +354,14 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
         self.db.commit()
 
         notexist_total = 12
-        resp = self.api_post(f"/role/{role.uuid}/permission/append", body={
+        resp = self.api_post("/role/permission/append", body={
+            "role": role.name,
             "permissions": [str(uuid.uuid4()) for i in range(notexist_total)],
         })
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
 
-        spec = self.rs.post_role_id_permission_append.op_spec[
+        spec = self.rs.post_role_permission_append.op_spec[
             "responses"]["default"]["schema"]
         api.validate_object(spec, body)
 
@@ -364,15 +370,19 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
 
 
 class RolePermissionRemoveTestCase(RoleBaseTestCase):
-    """POST /role/{id}/permission/remove - 删除指定角色的权限
+    """POST /role/permission/remove - 删除指定角色的权限
     """
 
     def test_not_found(self):
-        """使用不存在的角色ID
+        """使用不存在的角色名
         """
-        role_id = str(uuid.uuid4())
-        resp = self.api_post(f"/role/{role_id}/permission/remove")
-        self.validate_not_found(resp)
+        resp = self.api_post("/role/permission/remove", body={
+            "role": "not-exist-role"})
+        body = get_body_json(resp)
+        self.assertEqual(resp.code, 400)
+        validate_default_error(body)
+
+        self.assertEqual(body["status"], "role-not-found")
 
     def test_post_success(self):
         """删除权限成功
@@ -393,7 +403,8 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
             if i < remove_permission_total:
                 remove_permission_list.append(str(perm.uuid))
 
-        resp = self.api_post(f"/role/{role.uuid}/permission/remove", body={
+        resp = self.api_post("/role/permission/remove", body={
+            "role": role.name,
             "permissions": remove_permission_list,
         })
         body = get_body_json(resp)
@@ -415,46 +426,16 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
         self.db.commit()
 
         notexist_total = 12
-        resp = self.api_post(f"/role/{role.uuid}/permission/remove", body={
+        resp = self.api_post("/role/permission/remove", body={
+            "role": role.name,
             "permissions": [str(uuid.uuid4()) for i in range(notexist_total)],
         })
         body = get_body_json(resp)
         self.assertEqual(resp.code, 400)
 
-        spec = self.rs.post_role_id_permission_remove.op_spec[
+        spec = self.rs.post_role_permission_remove.op_spec[
             "responses"]["default"]["schema"]
         api.validate_object(spec, body)
 
         self.assertEqual(body["status"], "have-not-exist")
         self.assertEqual(len(body["data"]), notexist_total)
-
-
-class RoleIDByNameTestCase(RoleBaseTestCase):
-    """GET /role/id - 通过角色名查看ID
-    """
-
-    def test_not_found(self):
-        """角色名不存在
-        """
-
-        resp = self.api_get(f"/role/id?name=notexist")
-        self.validate_not_found(resp)
-
-    def test_get_success(self):
-        """正确
-        """
-        role_name = "my-role"
-        role_summary = "my summary"
-        role = Role(name=role_name, summary=role_summary)
-        self.db.add(role)
-        self.db.commit()
-
-        resp = self.api_get(f"/role/id?name={role.name}")
-        body = get_body_json(resp)
-        self.assertEqual(resp.code, 200)
-        self.validate_default_success(body)
-
-        spec = self.rs.get_role_id.op_spec["responses"]["200"]["schema"]
-        api.validate_object(spec, body)
-
-        self.assertEqual(body["id"], str(role.uuid))

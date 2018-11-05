@@ -152,11 +152,14 @@ class RolePermissionHandler(_BaseSingleRoleHandler):
 
 class RolePermissionAppendHandler(_BaseSingleRoleHandler):
 
-    async def post(self, _id):
+    async def post(self):
         """增加指定角色的权限
         """
-        role = self.get_role(_id)
         body = self.get_body_json()
+        role = self.db.query(Role).filter_by(name=body["role"]).first()
+        if not role:
+            self.fail("role-not-found")
+            return
 
         perms, notexist = self.get_permissions(body["permissions"])
         if notexist:
@@ -182,11 +185,14 @@ class RolePermissionAppendHandler(_BaseSingleRoleHandler):
 
 class RolePermissionRemoveHandler(_BaseSingleRoleHandler):
 
-    async def post(self, _id):
+    async def post(self):
         """删除指定角色的权限
         """
-        role = self.get_role(_id)
         body = self.get_body_json()
+        role = self.db.query(Role).filter_by(name=body["role"]).first()
+        if not role:
+            self.fail("role-not-found")
+            return
 
         perms, notexist = self.get_permissions(body["permissions"])
         if notexist:
@@ -210,15 +216,3 @@ class RolePermissionRemoveHandler(_BaseSingleRoleHandler):
             role.permissions.remove(perm)
         self.db.commit()
         self.success()
-
-
-class RoleIDByNameHandler(APIRequestHandler):
-
-    def get(self):
-        name = self.get_query_argument("name")
-        role = self.db.query(Role).filter_by(name=name).first()
-        if not role:
-            self.fail("not-found")
-            return
-
-        self.success(id=str(role.uuid))

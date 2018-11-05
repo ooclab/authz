@@ -50,9 +50,6 @@ HANDLERS = [
     url(r"/role",
         role.RoleHandler),
 
-    url(r"/role/id",
-        role.RoleIDByNameHandler),
-
     url(r"/role/"
         r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
         role.SingleRoleHandler),
@@ -62,14 +59,10 @@ HANDLERS = [
         r"/permission",
         role.RolePermissionHandler),
 
-    url(r"/role/"
-        r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
-        r"/permission/append",
+    url(r"/role/permission/append",
         role.RolePermissionAppendHandler),
 
-    url(r"/role/"
-        r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
-        r"/permission/remove",
+    url(r"/role/permission/remove",
         role.RolePermissionRemoveHandler),
 
     # Permission

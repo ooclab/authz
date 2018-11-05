@@ -614,43 +614,6 @@ paths:
           schema:
             $ref: '#/definitions/DefaultErrorResponse'
 
-  "/role/id":
-
-    parameters:
-    - $ref: '#/parameters/Authorization'
-
-    get:
-      tags:
-      - role
-      summary: 通过给定的角色名获取角色ID
-      parameters:
-      - name: name
-        in: query
-        required: true
-        description: 角色名
-        type: string
-        maxLength: 64
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                default: "success"
-              id:
-                type: string
-                format: uuid
-                description: 角色ID
-        default:
-          description: |
-            返回错误信息
-            error 值及含义：
-            - `not-found` : 名称不存在
-          schema:
-            $ref: '#/definitions/DefaultErrorResponse'
-
   "/role/{id}":
 
     parameters:
@@ -751,7 +714,7 @@ paths:
             $ref: '#/definitions/DefaultErrorResponse'
 
 
-  "/role/{id}/permission/append":
+  "/role/permission/append":
 
     post:
       tags:
@@ -759,12 +722,17 @@ paths:
       summary: 为指定角色增加权限
       parameters:
       - $ref: '#/parameters/Authorization'
-      - $ref: '#/parameters/PathRoleID'
       - name: body
         in: body
         schema:
           type: object
+          required:
+          - role
+          - permissions
           properties:
+            role:
+              type: string
+              description: 角色名
             permissions:
               type: array
               items:
@@ -791,7 +759,7 @@ paths:
                   format: uuid
                   description: 权限ID
 
-  "/role/{id}/permission/remove":
+  "/role/permission/remove":
 
     post:
       tags:
@@ -804,7 +772,13 @@ paths:
         in: body
         schema:
           type: object
+          required:
+          - role
+          - permissions
           properties:
+            role:
+              type: string
+              description: 角色名
             permissions:
               type: array
               items:
