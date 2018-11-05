@@ -84,7 +84,7 @@ class _BaseSingleRoleHandler(APIRequestHandler):
             return role
         raise HTTPError(400, reason="not-found")
 
-    def get_permissions(self, perm_ids):
+    def get_permissions(self, perm_names):
         """通过给定的权限ID列表，查询对应的权限对象
 
         返回：
@@ -93,12 +93,12 @@ class _BaseSingleRoleHandler(APIRequestHandler):
         """
         notexsit = []
         perms = []
-        for perm_id in perm_ids:
-            perm = self.db.query(Permission).filter_by(uuid=perm_id).first()
+        for perm_name in perm_names:
+            perm = self.db.query(Permission).filter_by(name=perm_name).first()
             if perm:
                 perms.append(perm)
             else:
-                notexsit.append(perm_id)
+                notexsit.append(perm_name)
         return perms, notexsit
 
 

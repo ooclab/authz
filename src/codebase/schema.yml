@@ -737,8 +737,7 @@ paths:
               type: array
               items:
                 type: string
-                format: uuid
-                description: 权限ID
+                description: 权限名称
       responses:
         "200":
           description: OK
@@ -756,8 +755,7 @@ paths:
                 type: array
                 items:
                   type: string
-                  format: uuid
-                  description: 权限ID
+                  description: 权限名称
 
   "/role/permission/remove":
 
@@ -783,8 +781,7 @@ paths:
               type: array
               items:
                 type: string
-                format: uuid
-                description: 权限ID
+                description: 权限名称
       responses:
         "200":
           description: OK
@@ -802,8 +799,7 @@ paths:
                 type: array
                 items:
                   type: string
-                  format: uuid
-                  description: 权限ID
+                  description: 权限名称
 
 
 definitions:

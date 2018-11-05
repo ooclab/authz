@@ -329,7 +329,7 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
             perm = Permission(name=append_permission_basename + str(i))
             self.db.add(perm)
             self.db.commit()
-            append_permission_list.append(str(perm.uuid))
+            append_permission_list.append(perm.name)
 
         resp = self.api_post("/role/permission/append", body={
             "role": role.name,
@@ -346,7 +346,7 @@ class RolePermissionAppendTestCase(RoleBaseTestCase):
         )
 
     def test_notexist_permissions(self):
-        """使用不存在的权限ID
+        """使用不存在的权限名称
         """
         role_name = "my-role"
         role = Role(name=role_name)
@@ -401,7 +401,7 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
             role.permissions.append(perm)
             self.db.commit()
             if i < remove_permission_total:
-                remove_permission_list.append(str(perm.uuid))
+                remove_permission_list.append(perm.name)
 
         resp = self.api_post("/role/permission/remove", body={
             "role": role.name,
@@ -418,7 +418,7 @@ class RolePermissionRemoveTestCase(RoleBaseTestCase):
         )
 
     def test_notexist_permissions(self):
-        """使用不存在的权限ID
+        """使用不存在的权限名称
         """
         role_name = "my-role"
         role = Role(name=role_name)
