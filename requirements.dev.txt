@@ -12,3 +12,4 @@ requests
 codecov
 git+https://gitlab.com/pycqa/flake8#egg=flake8
 black==18.9b0
+etcd3-py==0.1.5
