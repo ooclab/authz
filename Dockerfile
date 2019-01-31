@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.7
 MAINTAINER info@ooclab.com
 
 ENV PYTHONIOENCODING=utf-8
@@ -6,9 +6,7 @@ ENV PYTHONPATH=/work
 ENV PATH /usr/local/bin:$PATH
 
 COPY requirements.txt .
-RUN apk add --no-cache --virtual .pynacl_deps \
-  gcc libc-dev libressl-dev libffi-dev \
-  && pip3 install --no-cache-dir -r requirements.txt \
+RUN pip3 install -r requirements.txt \
   && python3 -m compileall /work
 COPY src /work
 
