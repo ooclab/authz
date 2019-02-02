@@ -134,6 +134,7 @@ class User(ORMBase):
 @event.listens_for(Role.__table__, 'after_create')
 def insert_initial_roles(*args, **kwargs):
     db = dbc.session()
+    db.add(Permission(name="admin"))
     db.add(Role(name=settings.ADMIN_ROLE_NAME))
     db.add(Role(name='anonymous'))
     db.add(Role(name='authenticated'))
