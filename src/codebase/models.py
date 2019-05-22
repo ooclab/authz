@@ -130,11 +130,17 @@ class User(ORMBase):
         return False
 
 
+@event.listens_for(Permission.__table__, 'after_create')
+def insert_initial_perms(*args, **kwargs):
+    db = dbc.session()
+    db.add(Permission(name="admin"))
+    db.commit()
+
+
 # 第一次创建 Role 表时创建一些默认角色
 @event.listens_for(Role.__table__, 'after_create')
 def insert_initial_roles(*args, **kwargs):
     db = dbc.session()
-    db.add(Permission(name="admin"))
     db.add(Role(name=settings.ADMIN_ROLE_NAME))
     db.add(Role(name='anonymous'))
     db.add(Role(name='authenticated'))
