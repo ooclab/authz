@@ -3,7 +3,7 @@ CORS = "false"
 SECRET_KEY = "Unmy6tuxgIAPX7zxlp80MxcDz1mofni2chnrF4cxMQQjq"
 SERVER_EMAIL = "info@ooclab.com"
 
-SYNC_DATABASE = "false"
+SYNC_DATABASE = "true"
 # http://docs.sqlalchemy.org/en/latest/core/engines.html
 DB_URI = "sqlite://"
 # DB_URI = "postgresql://root:password@postgres:5432/authz"
