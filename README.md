@@ -1,7 +1,7 @@
 # authz
 
-[![Build Status](https://travis-ci.com/ooclab/authz.svg?branch=master)](https://travis-ci.com/ooclab/authz)
-[![codecov](https://codecov.io/gh/ooclab/authz/branch/master/graph/badge.svg)](https://codecov.io/gh/ooclab/authz)
+[![Build Status](https://travis-ci.com/ooclab/ga.authz.svg?branch=master)](https://travis-ci.com/ooclab/ga.authz)
+[![codecov](https://codecov.io/gh/ooclab/ga.authz/branch/master/graph/badge.svg)](https://codecov.io/gh/ooclab/ga.authz)
 
 The authorization (authz) service for service-oriented architecture
 
