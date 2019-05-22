@@ -99,7 +99,7 @@ class PermissionListTestCase(_Base):
         api.validate_object(spec, body)
 
         self.assertEqual(len(body["data"]), body["filter"]["page_size"])
-        self.assertEqual(body["filter"]["total"], self.total)
+        self.assertEqual(body["filter"]["total"], self.total + 1)
 
     def test_no_such_page(self):
         """查无此页

@@ -1,3 +1,5 @@
+# pylint: disable=E1101
+
 import uuid
 
 from eva.conf import settings

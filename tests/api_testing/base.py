@@ -64,7 +64,7 @@ class BaseTestCase(tornado.testing.AsyncHTTPTestCase):
         return f"  {SECOND_ARROW} {second}"
 
     def get_app(self):
-        settings.DEBUG = False
+        settings.DEBUG = "false"
         return make_app()
 
     @classmethod
